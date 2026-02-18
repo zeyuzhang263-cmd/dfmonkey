@@ -1,0 +1,804 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>dfmonkey v3.0 - AI驱动的EA交易解决方案</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #3b82f6;
+            --secondary: #06b6d4;
+            --accent: #8b5cf6;
+        }
+
+        body {
+            background: #000;
+            color: #fff;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        }
+
+        /* Header */
+        header {
+            background: rgba(0,0,0,0.8);
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            backdrop-filter: blur(10px);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        nav {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: bold;
+            background: linear-gradient(to right, #60a5fa, #06b6d4);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        /* Hero Section */
+        .hero {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 4rem 2rem;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 4rem;
+            align-items: center;
+        }
+
+        .hero-left h1 {
+            font-size: 3rem;
+            line-height: 1.2;
+            margin-bottom: 1rem;
+            background: linear-gradient(to right, #60a5fa, #a78bfa, #06b6d4);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .hero-left p {
+            font-size: 1.1rem;
+            color: #999;
+            margin-bottom: 2rem;
+            line-height: 1.6;
+        }
+
+        .buttons {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .btn {
+            padding: 0.75rem 1.5rem;
+            border-radius: 0.5rem;
+            font-weight: 600;
+            cursor: pointer;
+            border: none;
+            transition: all 0.3s;
+        }
+
+        .btn-primary {
+            background: linear-gradient(to right, #3b82f6, #06b6d4);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(59, 130, 246, 0.4);
+        }
+
+        .btn-secondary {
+            border: 2px solid #666;
+            background: transparent;
+            color: white;
+        }
+
+        .btn-secondary:hover {
+            border-color: var(--primary);
+            background: rgba(59, 130, 246, 0.1);
+        }
+
+        /* 小统计卡片 */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+            margin-top: 2rem;
+        }
+
+        .stat-card {
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 0.75rem;
+            padding: 1rem;
+            transition: all 0.3s;
+        }
+
+        .stat-card:hover {
+            border-color: var(--primary);
+            background: rgba(255,255,255,0.08);
+        }
+
+        .stat-label {
+            font-size: 0.8rem;
+            color: #999;
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-value {
+            font-size: 1.5rem;
+            font-weight: bold;
+        }
+
+        /* 右侧仪表板 */
+        .dashboard {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+
+        .dashboard-card {
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 1rem;
+            padding: 2rem;
+            backdrop-filter: blur(10px);
+        }
+
+        .dashboard-card:hover {
+            border-color: var(--primary);
+            background: rgba(255,255,255,0.08);
+        }
+
+        .dashboard-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: start;
+            margin-bottom: 1.5rem;
+        }
+
+        .dashboard-header h3 {
+            font-size: 1.25rem;
+        }
+
+        .status-badge {
+            color: #4ade80;
+            font-size: 0.9rem;
+        }
+
+        .metric {
+            margin-bottom: 1rem;
+        }
+
+        .metric-label {
+            color: #999;
+            font-size: 0.9rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .metric-value {
+            font-size: 2.5rem;
+            font-weight: bold;
+            color: #4ade80;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 0.5rem;
+            background: rgba(255,255,255,0.1);
+            border-radius: 0.25rem;
+            overflow: hidden;
+            margin: 1rem 0;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(to right, #4ade80, #06b6d4);
+            width: 85%;
+        }
+
+        .metrics-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+            margin-top: 1.5rem;
+            padding-top: 1.5rem;
+            border-top: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .dashboard-mini {
+            background: rgba(59, 130, 246, 0.1);
+            border: 1px solid rgba(59, 130, 246, 0.3);
+            border-radius: 0.75rem;
+            padding: 1rem;
+        }
+
+        .dashboard-mini h4 {
+            font-size: 0.9rem;
+            margin-bottom: 0.5rem;
+        }
+
+        /* 排行榜 */
+        .leaderboard-section {
+            background: rgba(255,255,255,0.05);
+            border-top: 1px solid rgba(255,255,255,0.1);
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            padding: 4rem 2rem;
+            margin: 4rem 0;
+        }
+
+        .leaderboard-section h2 {
+            text-align: center;
+            font-size: 2.5rem;
+            margin-bottom: 3rem;
+            background: linear-gradient(to right, #fbbf24, #f97316);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .leaderboard-container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .leaderboard-item {
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 1rem;
+            padding: 1.5rem;
+            margin-bottom: 1rem;
+            display: grid;
+            grid-template-columns: auto 1fr auto;
+            gap: 2rem;
+            align-items: center;
+            transition: all 0.3s;
+        }
+
+        .leaderboard-item:hover {
+            border-color: var(--primary);
+            background: rgba(255,255,255,0.08);
+        }
+
+        .rank {
+            font-size: 2.5rem;
+            font-weight: bold;
+            width: 80px;
+            text-align: center;
+        }
+
+        .rank-1 { color: #fbbf24; }
+        .rank-2 { color: #d1d5db; }
+        .rank-3 { color: #f97316; }
+
+        .leaderboard-info h3 {
+            font-size: 1.25rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .badge {
+            display: inline-block;
+            background: rgba(255,255,255,0.1);
+            padding: 0.25rem 0.75rem;
+            border-radius: 2rem;
+            font-size: 0.8rem;
+        }
+
+        .leaderboard-stats {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 2rem;
+        }
+
+        .stat-item {
+            text-align: right;
+        }
+
+        .stat-item-label {
+            color: #999;
+            font-size: 0.9rem;
+            margin-bottom: 0.3rem;
+        }
+
+        .stat-item-value {
+            font-size: 1.5rem;
+            font-weight: bold;
+        }
+
+        /* 产品卡片 */
+        .products-section {
+            max-width: 1200px;
+            margin: 4rem auto;
+            padding: 0 2rem;
+        }
+
+        .products-section h2 {
+            text-align: center;
+            font-size: 2.5rem;
+            margin-bottom: 3rem;
+            background: linear-gradient(to right, #a78bfa, #ec4899);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .products-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+        }
+
+        .product-card {
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 1.5rem;
+            padding: 2rem;
+            transition: all 0.3s;
+        }
+
+        .product-card:hover {
+            border-color: var(--primary);
+            background: rgba(255,255,255,0.08);
+            transform: translateY(-5px);
+        }
+
+        .product-name {
+            font-size: 1.25rem;
+            font-weight: bold;
+            margin-bottom: 0.5rem;
+        }
+
+        .product-desc {
+            color: #999;
+            margin-bottom: 1.5rem;
+            font-size: 0.9rem;
+        }
+
+        .product-stats {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+            padding: 1.5rem 0;
+            border-top: 1px solid rgba(255,255,255,0.1);
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .product-stat {
+            text-align: center;
+        }
+
+        .product-stat-label {
+            color: #999;
+            font-size: 0.8rem;
+            margin-bottom: 0.3rem;
+        }
+
+        .product-stat-value {
+            font-weight: bold;
+        }
+
+        .users-bar {
+            margin-bottom: 1.5rem;
+        }
+
+        .users-label {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 0.5rem;
+            font-size: 0.9rem;
+        }
+
+        .product-button {
+            width: 100%;
+            background: linear-gradient(to right, #3b82f6, #06b6d4);
+            color: white;
+            border: none;
+            padding: 0.75rem;
+            border-radius: 0.5rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .product-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(59, 130, 246, 0.3);
+        }
+
+        /* Features */
+        .features-section {
+            background: rgba(255,255,255,0.05);
+            border-top: 1px solid rgba(255,255,255,0.1);
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            padding: 4rem 2rem;
+            margin-top: 4rem;
+        }
+
+        .features-section h2 {
+            text-align: center;
+            font-size: 2rem;
+            margin-bottom: 3rem;
+        }
+
+        .features-grid {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+        }
+
+        .feature {
+            background: rgba(255,255,255,0.05);
+            padding: 1.5rem;
+            border-radius: 1rem;
+            border: 1px solid rgba(255,255,255,0.1);
+            transition: all 0.3s;
+        }
+
+        .feature:hover {
+            border-color: var(--primary);
+            background: rgba(255,255,255,0.08);
+        }
+
+        .feature-icon {
+            font-size: 2rem;
+            margin-bottom: 1rem;
+        }
+
+        .feature h3 {
+            font-size: 1.1rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .feature p {
+            color: #999;
+            font-size: 0.9rem;
+        }
+
+        /* Footer */
+        footer {
+            border-top: 1px solid rgba(255,255,255,0.1);
+            padding: 2rem;
+            text-align: center;
+            color: #999;
+        }
+
+        /* 响应式 */
+        @media (max-width: 768px) {
+            .hero {
+                grid-template-columns: 1fr;
+            }
+
+            .hero-left h1 {
+                font-size: 2rem;
+            }
+
+            .leaderboard-item {
+                grid-template-columns: 1fr;
+            }
+
+            .leaderboard-stats {
+                grid-template-columns: 1fr;
+            }
+
+            .stat-item {
+                text-align: left;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <nav>
+            <div class="logo">🪼 dfmonkey</div>
+            <button class="btn btn-primary">开始交易</button>
+        </nav>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="hero-left">
+            <h1>AI驱动的<br>稳定交易</h1>
+            <p>三个经过验证的 AI 策略。稳定盈利。自动执行。无论你的账户多小，都能开始。</p>
+            
+            <div class="buttons">
+                <button class="btn btn-primary">免费试用 7 天</button>
+                <button class="btn btn-secondary">查看排行榜 →</button>
+            </div>
+
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-label">活跃交易者</div>
+                    <div class="stat-value">5,200+</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label">管理资产</div>
+                    <div class="stat-value">$85M+</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label">日均交易</div>
+                    <div class="stat-value">15,800+</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label">平均收益</div>
+                    <div class="stat-value" style="color: #4ade80;">+28.5%</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="dashboard">
+            <div class="dashboard-card">
+                <div class="dashboard-header">
+                    <h3>实时表现</h3>
+                    <div class="status-badge">↑ 24h</div>
+                </div>
+
+                <div class="metric">
+                    <div class="metric-label">今日收益率</div>
+                    <div class="metric-value">+2.45%</div>
+                </div>
+
+                <div class="progress-bar">
+                    <div class="progress-fill"></div>
+                </div>
+
+                <div class="metrics-grid">
+                    <div>
+                        <div class="metric-label">胜率</div>
+                        <div class="metric-value" style="color: white; font-size: 1.5rem;">62.3%</div>
+                    </div>
+                    <div>
+                        <div class="metric-label">回撤</div>
+                        <div class="metric-value" style="color: #f97316; font-size: 1.5rem;">-8.2%</div>
+                    </div>
+                </div>
+            </div>
+
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                <div class="dashboard-mini">
+                    <h4>TrendFlow AI</h4>
+                    <p style="font-size: 0.8rem; color: #999;">稳定趋势跟踪</p>
+                    <div style="font-size: 1.5rem; font-weight: bold; margin-top: 0.5rem; color: #4ade80;">20-30%</div>
+                </div>
+                <div class="dashboard-mini">
+                    <h4>BreakLevel AI</h4>
+                    <p style="font-size: 0.8rem; color: #999;">突破点位战术</p>
+                    <div style="font-size: 1.5rem; font-weight: bold; margin-top: 0.5rem; color: #4ade80;">30-50%</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 排行榜 -->
+    <section class="leaderboard-section">
+        <h2>⭐ 策略排行榜</h2>
+        <div class="leaderboard-container">
+            <div class="leaderboard-item">
+                <div class="rank rank-1">#1</div>
+                <div class="leaderboard-info">
+                    <h3>TrendFlow AI</h3>
+                    <span class="badge">⭐ Most Popular</span>
+                </div>
+                <div class="leaderboard-stats">
+                    <div class="stat-item">
+                        <div class="stat-item-label">年化收益</div>
+                        <div class="stat-item-value" style="color: #4ade80;">+245%</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-item-label">活跃用户</div>
+                        <div class="stat-item-value" style="color: #60a5fa;">1,245</div>
+                    </div>
+                    <div class="stat-item">
+                        <button class="btn btn-primary">了解更多</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="leaderboard-item">
+                <div class="rank rank-2">#2</div>
+                <div class="leaderboard-info">
+                    <h3>BreakLevel AI</h3>
+                    <span class="badge">🔥 Rising Star</span>
+                </div>
+                <div class="leaderboard-stats">
+                    <div class="stat-item">
+                        <div class="stat-item-label">年化收益</div>
+                        <div class="stat-item-value" style="color: #4ade80;">+189%</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-item-label">活跃用户</div>
+                        <div class="stat-item-value" style="color: #60a5fa;">892</div>
+                    </div>
+                    <div class="stat-item">
+                        <button class="btn btn-primary">了解更多</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="leaderboard-item">
+                <div class="rank rank-3">#3</div>
+                <div class="leaderboard-info">
+                    <h3>InstitutionHunter</h3>
+                    <span class="badge">👑 Top Performer</span>
+                </div>
+                <div class="leaderboard-stats">
+                    <div class="stat-item">
+                        <div class="stat-item-label">年化收益</div>
+                        <div class="stat-item-value" style="color: #4ade80;">+312%</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-item-label">活跃用户</div>
+                        <div class="stat-item-value" style="color: #60a5fa;">654</div>
+                    </div>
+                    <div class="stat-item">
+                        <button class="btn btn-primary">了解更多</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 产品 -->
+    <section class="products-section">
+        <h2>三个经过验证的策略</h2>
+        <div class="products-grid">
+            <div class="product-card">
+                <div style="width: 2rem; height: 2rem; background: linear-gradient(to bottom right, #3b82f6, #06b6d4); border-radius: 0.5rem; margin-bottom: 1rem; opacity: 0.3;"></div>
+                <h3 class="product-name">TrendFlow AI</h3>
+                <p class="product-desc">稳定的趋势跟踪策略</p>
+                
+                <div class="product-stats">
+                    <div class="product-stat">
+                        <div class="product-stat-label">风险</div>
+                        <div class="product-stat-value">1-2%</div>
+                    </div>
+                    <div class="product-stat">
+                        <div class="product-stat-label">胜率</div>
+                        <div class="product-stat-value">55-65%</div>
+                    </div>
+                    <div class="product-stat">
+                        <div class="product-stat-label">年化</div>
+                        <div class="product-stat-value" style="color: #4ade80;">20-30%</div>
+                    </div>
+                    <div class="product-stat">
+                        <div class="product-stat-label">回撤</div>
+                        <div class="product-stat-value" style="color: #f97316;"><15%</div>
+                    </div>
+                </div>
+
+                <div class="users-bar">
+                    <div class="users-label">
+                        <span>活跃用户: 1,245</span>
+                        <span>⭐</span>
+                    </div>
+                    <div class="progress-bar" style="height: 0.3rem;">
+                        <div class="progress-fill" style="width: 100%;"></div>
+                    </div>
+                </div>
+
+                <button class="product-button">₹69 / 一次</button>
+            </div>
+
+            <div class="product-card">
+                <div style="width: 2rem; height: 2rem; background: linear-gradient(to bottom right, #8b5cf6, #ec4899); border-radius: 0.5rem; margin-bottom: 1rem; opacity: 0.3;"></div>
+                <h3 class="product-name">BreakLevel AI</h3>
+                <p class="product-desc">突破点位战术策略</p>
+                
+                <div class="product-stats">
+                    <div class="product-stat">
+                        <div class="product-stat-label">风险</div>
+                        <div class="product-stat-value">1-2%</div>
+                    </div>
+                    <div class="product-stat">
+                        <div class="product-stat-label">胜率</div>
+                        <div class="product-stat-value">65-70%</div>
+                    </div>
+                    <div class="product-stat">
+                        <div class="product-stat-label">年化</div>
+                        <div class="product-stat-value" style="color: #4ade80;">30-50%</div>
+                    </div>
+                    <div class="product-stat">
+                        <div class="product-stat-label">回撤</div>
+                        <div class="product-stat-value" style="color: #f97316;"><20%</div>
+                    </div>
+                </div>
+
+                <div class="users-bar">
+                    <div class="users-label">
+                        <span>活跃用户: 892</span>
+                        <span>🔥</span>
+                    </div>
+                    <div class="progress-bar" style="height: 0.3rem;">
+                        <div class="progress-fill" style="width: 72%;"></div>
+                    </div>
+                </div>
+
+                <button class="product-button">₹89 / 一次</button>
+            </div>
+
+            <div class="product-card">
+                <div style="width: 2rem; height: 2rem; background: linear-gradient(to bottom right, #f97316, #ef4444); border-radius: 0.5rem; margin-bottom: 1rem; opacity: 0.3;"></div>
+                <h3 class="product-name">InstitutionHunter</h3>
+                <p class="product-desc">MVG + 多周期策略</p>
+                
+                <div class="product-stats">
+                    <div class="product-stat">
+                        <div class="product-stat-label">风险</div>
+                        <div class="product-stat-value">2-3%</div>
+                    </div>
+                    <div class="product-stat">
+                        <div class="product-stat-label">胜率</div>
+                        <div class="product-stat-value">60-65%</div>
+                    </div>
+                    <div class="product-stat">
+                        <div class="product-stat-label">年化</div>
+                        <div class="product-stat-value" style="color: #4ade80;">50-100%</div>
+                    </div>
+                    <div class="product-stat">
+                        <div class="product-stat-label">回撤</div>
+                        <div class="product-stat-value" style="color: #f97316;"><25%</div>
+                    </div>
+                </div>
+
+                <div class="users-bar">
+                    <div class="users-label">
+                        <span>活跃用户: 654</span>
+                        <span>👑</span>
+                    </div>
+                    <div class="progress-bar" style="height: 0.3rem;">
+                        <div class="progress-fill" style="width: 53%;"></div>
+                    </div>
+                </div>
+
+                <button class="product-button">₹99 / 一次</button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features -->
+    <section class="features-section">
+        <h2>为什么选择 dfmonkey</h2>
+        <div class="features-grid">
+            <div class="feature">
+                <div class="feature-icon">🛡️</div>
+                <h3>企业级风控</h3>
+                <p>资金安全 + 风险隔离，保护你的每一分钱</p>
+            </div>
+            <div class="feature">
+                <div class="feature-icon">⏰</div>
+                <h3>24/7 自动交易</h3>
+                <p>零时差执行 + 秒级反应，永不睡眠</p>
+            </div>
+            <div class="feature">
+                <div class="feature-icon">📱</div>
+                <h3>全平台支持</h3>
+                <p>外汇 | 加密 | 期货 | 股票，一个平台搞定</p>
+            </div>
+            <div class="feature">
+                <div class="feature-icon">👥</div>
+                <h3>社区支持</h3>
+                <p>1000+ 活跃交易者社群，知识库完整</p>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <p>&copy; 2026 dfmonkey. 由 Jelly 与你共同构建。</p>
+    </footer>
+</body>
+</html>
