@@ -1,0 +1,8 @@
+[build]
+  command = "# No build needed for static HTML"
+  publish = "."
+
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
